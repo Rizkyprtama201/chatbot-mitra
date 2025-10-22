@@ -18,12 +18,32 @@
 require('./len')
 require('./database/Menu/LenwyMenu')
 const fs = require('fs');
+const path = require('path');
 const axios = require('axios');
 
 // Import Scrape
 const Ai4Chat = require('./scrape/Ai4Chat');
 const tiktok2 = require('./scrape/Tiktok');
 
+// ==== FILE JSON UNTUK VERIFIKASI LMS ====
+const verifikasiFile = path.join(__dirname, 'database', 'verifikasi.json');
+const validUsersFile = path.join(__dirname, 'database', 'validUsers.json');
+
+// Pastikan file ada
+if (!fs.existsSync(verifikasiFile)) fs.writeFileSync(verifikasiFile, JSON.stringify({}));
+if (!fs.existsSync(validUsersFile)) {
+    fs.writeFileSync(validUsersFile, JSON.stringify([
+        { id: "12345", nama: "Andi" },
+        { id: "67890", nama: "Budi" }
+    ]));
+}
+
+// Fungsi bantu baca/tulis verifikasi
+const loadVerifikasi = () => JSON.parse(fs.readFileSync(verifikasiFile, 'utf-8'));
+const saveVerifikasi = (data) => fs.writeFileSync(verifikasiFile, JSON.stringify(data, null, 2));
+const loadValidUsers = () => JSON.parse(fs.readFileSync(validUsersFile, 'utf-8'));
+
+// ============================
 module.exports = async (lenwy, m) => {
     const msg = m.messages[0];
     if (!msg.message) return;
@@ -44,91 +64,88 @@ module.exports = async (lenwy, m) => {
 
 switch (command) {
 
-// Menu
-case "menu": {
-    await lenwy.sendMessage(sender,
-        {
-            image: menuImage,
-            caption: lenwymenu,
-            mentions: [sender]
-        },
-    { quoted: msg }
-    )
-}
-break
-
-// Hanya Admin
-case "admin": {
-    if (!isAdmin) return lenwyreply(mess.admin); // COntoh Penerapan Hanya Admin
-    lenwyreply("🎁 *Kamu Adalah Admin*"); // Admin Akan Menerima Pesan Ini
-}
-break
-
-// Hanya Group
-case "group": {
-    if (!isGroup) return lenwyreply(mess.group); // Contoh Penerapan Hanya Group
-    lenwyreply("🎁 *Kamu Sedang Berada Di Dalam Grup*"); // Pesan Ini Hanya Akan Dikirim Jika Di Dalam Grup
-}
-break
-
-// AI Chat
-case "ai": {
-    if (!q) return lenwyreply("☘️ *Contoh:* !ai Apa itu JavaScript?");
-        lenwyreply(mess.wait);
-    try {
-        const lenai = await Ai4Chat(q);
-            await lenwyreply(`*Lenwy AI*\n\n${lenai}`);
-                } catch (error) {
-            console.error("Error:", error);
-        lenwyreply(mess.error);
+    // Menu
+    case "menu": {
+        await lenwy.sendMessage(sender,
+            {
+                image: menuImage,
+                caption: lenwymenu,
+                mentions: [sender]
+            },
+        { quoted: msg }
+        )
     }
-}
-break;
+    break
 
-case "jawa": {
-    if (!q) return lenwyreply("⚠ *jawa adalah suku terbaik?*");
+    // Hanya Admin
+    case "admin": {
+        if (!isAdmin) return lenwyreply(mess.admin);
+        lenwyreply("🎁 *Kamu Adalah Admin*");
+    }
+    break
+
+    // Hanya Group
+    case "group": {
+        if (!isGroup) return lenwyreply(mess.group);
+        lenwyreply("🎁 *Kamu Sedang Berada Di Dalam Grup*");
+    }
+    break
+
+    // AI Chat
+    case "ai": {
+        if (!q) return lenwyreply("☘️ *Contoh:* !ai Apa itu JavaScript?");
         lenwyreply(mess.wait);
-    try {
-        const result = await tiktok2(q); // Panggil Fungsi Scraper
+        try {
+            const lenai = await Ai4Chat(q);
+            await lenwyreply(`*Lenwy AI*\n\n${lenai}`);
+        } catch (error) {
+            console.error("Error:", error);
+            lenwyreply(mess.error);
+        }
+    }
+    break;
 
-            // Kirim Video
+    case "jawa": {
+        if (!q) return lenwyreply("⚠ *jawa adalah suku terbaik?*");
+        lenwyreply(mess.wait);
+        try {
+            const result = await tiktok2(q);
+
             await lenwy.sendMessage(
                 sender,
-                    {
-                        video: { url: result.no_watermark },
-                        caption: `*🎁 Lenwy Tiktok Downloader*`
-                    },
+                {
+                    video: { url: result.no_watermark },
+                    caption: `*🎁 Lenwy Tiktok Downloader*`
+                },
                 { quoted: msg }
             );
 
         } catch (error) {
             console.error("Error TikTok DL:", error);
-        lenwyreply(mess.error);
-    }
-}
-break;
-
-case "igdl": {
-    if (!q) return lenwyreply("⚠ *Mana Link Instagramnya?*");
-    try {
-        lenwyreply(mess.wait);
-
-        // Panggil API Velyn
-        const apiUrl = `https://www.velyn.biz.id/api/downloader/instagram?url=${encodeURIComponent(q)}`;
-        const response = await axios.get(apiUrl);
-
-        if (!response.data.status || !response.data.data.url[0]) {
-            throw new Error("Link tidak valid atau API error");
+            lenwyreply(mess.error);
         }
+    }
+    break;
 
-        const data = response.data.data;
-        const mediaUrl = data.url[0];
-        const metadata = data.metadata;
+    case "igdl": {
+        if (!q) return lenwyreply("⚠ *Mana Link Instagramnya?*");
+        try {
+            lenwyreply(mess.wait);
 
-        // Kirim Media
-        if (metadata.isVideo) {
-            await lenwy.sendMessage(
-                sender,
+            const apiUrl = `https://www.velyn.biz.id/api/downloader/instagram?url=${encodeURIComponent(q)}`;
+            const response = await axios.get(apiUrl);
+
+            if (!response.data.status || !response.data.data.url[0]) {
+                throw new Error("Link tidak valid atau API error");
+            }
+
+            const data = response.data.data;
+            const mediaUrl = data.url[0];
+            const metadata = data.metadata;
+
+            if (metadata.isVideo) {
+                await lenwy.sendMessage(
+                    sender,
                     {
                         video: { url: mediaUrl },
                         caption: `*Instagram Reel*\n\n` +
@@ -140,9 +157,9 @@ case "igdl": {
                     },
                     { quoted: msg }
                 );
-        } else {
-            await lenwy.sendMessage(
-                sender,
+            } else {
+                await lenwy.sendMessage(
+                    sender,
                     {
                         image: { url: mediaUrl },
                         caption: `*Instagram Post*\n\n` +
@@ -156,45 +173,85 @@ case "igdl": {
 
         } catch (error) {
             console.error("Error Instagram DL:", error);
-        lenwyreply(mess.error);
+            lenwyreply(mess.error);
+        }
     }
-}
-break;
+    break;
 
-// Game Tebak Angka
-case "tebakangka": {
-    const target = Math.floor(Math.random() * 100);
+    // Game Tebak Angka
+    case "tebakangka": {
+        const target = Math.floor(Math.random() * 100);
         lenwy.tebakGame = { target, sender };
-    lenwyreply("*Tebak Angka 1 - 100*\n*Ketik !tebak [Angka]*");
-}
-break;
+        lenwyreply("*Tebak Angka 1 - 100*\n*Ketik !tebak [Angka]*");
+    }
+    break;
 
-case "tebak": {
-    if (!lenwy.tebakGame || lenwy.tebakGame.sender !== sender) return;
+    case "tebak": {
+        if (!lenwy.tebakGame || lenwy.tebakGame.sender !== sender) return;
         const guess = parseInt(args[0]);
-    if (isNaN(guess)) return lenwyreply("❌ *Masukkan Angka!*");
+        if (isNaN(guess)) return lenwyreply("❌ *Masukkan Angka!*");
 
-    if (guess === lenwy.tebakGame.target) {
-        lenwyreply(`🎉 *Tebakkan Kamu Benar!*`);
+        if (guess === lenwy.tebakGame.target) {
+            lenwyreply(`🎉 *Tebakkan Kamu Benar!*`);
             delete lenwy.tebakGame;
         } else {
             lenwyreply(guess > lenwy.tebakGame.target ? "*Terlalu Tinggi!*" : "*Terlalu rendah!*");
+        }
     }
-}
-break;
+    break;
 
-case "quote": {
-    const quotes = [
-        "Semangat Tahun depan kita wisuda.",
-        "Kesempatan tidak datang dua kali.",
-        "Kamu lebih kuat dari yang kamu kira.",
-        "Tidak perlu kata-kata, yang penting bukti nyata."
-    ];
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-    lenwyreply(`*Quote Hari Ini :*\n_"${randomQuote}"_`);
-}
-break;
-
-        default: { lenwyreply(mess.default) }
+    case "quote": {
+        const quotes = [
+            "Semangat Tahun depan kita wisuda.",
+            "Kesempatan tidak datang dua kali.",
+            "Kamu lebih kuat dari yang kamu kira.",
+            "Tidak perlu kata-kata, yang penting bukti nyata."
+        ];
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        lenwyreply(`*Quote Hari Ini :*\n_"${randomQuote}"_`);
     }
+    break;
+
+    // ===== FITUR LMS BPS =====
+    case "pelatihan": {
+        let verifikasiData = loadVerifikasi();
+        const userData = verifikasiData[sender] || { step: 1 };
+
+        if (userData.step === 1) {
+            userData.step = 2;
+            verifikasiData[sender] = userData;
+            saveVerifikasi(verifikasiData);
+            return lenwyreply("📌 Silahkan masukkan ID Sobat BPS Anda:");
+        }
+
+        if (userData.step === 2) {
+            userData.id = body.trim();
+            userData.step = 3;
+            verifikasiData[sender] = userData;
+            saveVerifikasi(verifikasiData);
+            return lenwyreply("📌 Terima kasih. Sekarang masukkan nama lengkap Anda:");
+        }
+
+        if (userData.step === 3) {
+            userData.nama = body.trim();
+
+            const validUsers = loadValidUsers();
+            const found = validUsers.find(u => u.id === userData.id && u.nama.toLowerCase() === userData.nama.toLowerCase());
+
+            if (found) {
+                delete verifikasiData[sender];
+                saveVerifikasi(verifikasiData);
+                return lenwyreply("✅ Verifikasi berhasil! Berikut daftar pelatihan:\n- Statistik Dasar\n- Analisis Data\n- Survei Lapangan");
+            } else {
+                delete verifikasiData[sender];
+                saveVerifikasi(verifikasiData);
+                return lenwyreply("❌ Verifikasi gagal. ID atau nama tidak valid.");
+            }
+        }
+    }
+    break;
+
+    // Default
+    default: { lenwyreply(mess.default) }
+}
 }
