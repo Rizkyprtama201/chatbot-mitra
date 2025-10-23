@@ -1,0 +1,65 @@
+{
+  "6282352742822@s.whatsapp.net": [
+    {
+      "id": "SRT-STATDAS-1761187054298",
+      "text": "🎓 SERTIFIKAT KELULUSAN\n═══════════════════════════════\n\nDengan ini menerangkan bahwa:\n\nNama      : Andi\nProgram   : Statistik Dasar\nDurasi    : 2 minggu\nLevel     : Pemula\nInstruktur: Dr. Ahmad, M.Si\n\nTelah menyelesaikan program pelatihan dengan:\nNilai Kuis: 5/5\n\nStatus: LULUS 🎉\n\nTanggal   : 23 Oktober 2025\nID Sertifikat: SRT-STATDAS-1761187054298\n\n═══════════════════════════════\nBadan Pusat Statistik\nLearning Management System\n\n*Sertifikat ini diterbitkan secara digital dan dapat diverifikasi*",
+      "tanggal": "2025-10-23T02:37:34.298Z",
+      "pelatihanId": "STATDAS",
+      "namaPelatihan": "Statistik Dasar",
+      "score": 5,
+      "totalSoal": 5
+    },
+    {
+      "id": "SRT-STATDAS-1761188999325",
+      "filePath": "C:\\Users\\BPS6301-05\\Bot\\sertifikat_pdf\\Sertifikat_Statistik Dasar_Andi.pdf",
+      "filename": "Sertifikat_Statistik Dasar_Andi.pdf",
+      "text": "Sertifikat Statistik Dasar untuk Andi",
+      "tanggal": "2025-10-23T03:09:59.325Z",
+      "pelatihanId": "STATDAS",
+      "namaPelatihan": "Statistik Dasar",
+      "score": 5,
+      "totalSoal": 5,
+      "persentase": "100.0"
+    },
+    {
+      "id": "SRT-STATDAS-1761190772719",
+      "filePath": "C:\\Users\\BPS6301-05\\Bot\\sertifikat_pdf\\Sertifikat_Statistik Dasar_Andi.pdf",
+      "filename": "Sertifikat_Statistik Dasar_Andi.pdf",
+      "text": "Sertifikat Statistik Dasar untuk Andi",
+      "tanggal": "2025-10-23T03:39:32.719Z",
+      "pelatihanId": "STATDAS",
+      "namaPelatihan": "Statistik Dasar",
+      "score": 5,
+      "totalSoal": 5,
+      "persentase": "100.0",
+      "durasiPengerjaan": "0 menit"
+    },
+    {
+      "id": "SRT-STATDAS-1761190960269",
+      "filePath": "C:\\Users\\BPS6301-05\\Bot\\sertifikat_pdf\\Sertifikat_Statistik Dasar_Andi.pdf",
+      "filename": "Sertifikat_Statistik Dasar_Andi.pdf",
+      "text": "Sertifikat Statistik Dasar untuk Andi",
+      "tanggal": "2025-10-23T03:42:40.269Z",
+      "pelatihanId": "STATDAS",
+      "namaPelatihan": "Statistik Dasar",
+      "score": 5,
+      "totalSoal": 5,
+      "persentase": "100.0",
+      "durasiPengerjaan": "3 menit"
+    }
+  ],
+  "6283159727305@s.whatsapp.net": [
+    {
+      "id": "SRT-STATDAS-1761189583571",
+      "filePath": "C:\\Users\\BPS6301-05\\Bot\\sertifikat_pdf\\Sertifikat_Statistik Dasar_Andi.pdf",
+      "filename": "Sertifikat_Statistik Dasar_Andi.pdf",
+      "text": "Sertifikat Statistik Dasar untuk Andi",
+      "tanggal": "2025-10-23T03:19:43.571Z",
+      "pelatihanId": "STATDAS",
+      "namaPelatihan": "Statistik Dasar",
+      "score": 5,
+      "totalSoal": 5,
+      "persentase": "100.0"
+    }
+  ]
+}

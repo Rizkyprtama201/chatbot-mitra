@@ -4,6 +4,4 @@ global.lenwymenu = `*Menu Bot Lenwy*
 *> !Igdl - Download video Instagram*
 *> !Ttdl - Download video TikTok*
 *> !Tebakangka - Game Tebak angka*
-*> !Quote - Dapatkan Motivasi Hari Ini*
-
-*Youtube Channel : Lenwy*`
+*> !Quote - Dapatkan Motivasi Hari Ini*`
